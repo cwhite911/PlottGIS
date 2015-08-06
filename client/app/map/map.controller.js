@@ -6,8 +6,8 @@ angular.module('plottGisApp')
     var map = new mapboxgl.Map({
       container: 'map', // container id
       style: 'https://www.mapbox.com/mapbox-gl-styles/styles/satellite-v7.json', //stylesheet location
-      center: [40, -74.50], // starting position
-      zoom: 9 // starting zoom
+      center: [35.600251, -82.570848], // starting position
+      zoom: 17 // starting zoom
     });
 
     // Add zoom and rotation controls to the map.
