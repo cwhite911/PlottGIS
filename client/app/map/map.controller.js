@@ -21,6 +21,7 @@ angular.module('plottGisApp')
            console.log(features);
           //  document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
            $scope.clickFeature = features[0].properties;
+           $scope.$apply();
            console.log($scope.clickFeature);
        });
       });

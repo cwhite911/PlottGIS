@@ -1,9 +1,10 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
   <div id="map"></map>
-  <div class='features'>
-    <h1>Grave</h1><small>{{section}}-{{lot}}-{{grave_num}}</small>
+  <div ng-show="clickFeature" class='features'>
+    <h1>Grave: {{clickFeature.grave_num}}</h1><h2>{{clickFeature.section}}-{{clickFeature.lot}}-{{clickFeature.grave_num}}</h2>
     <ul ng-repeat="(key, value) in clickFeature">
-      <li>{{key}}: {{value}}</li>
+      <li ng-if="key !== 'url_photo'">{{key}}: {{value}}</li>
+      <li ng-if="key === 'url_photo'"><img ng-src={{value}} alt="Headstone Photo"/></li>
     </ul>
   </div>
