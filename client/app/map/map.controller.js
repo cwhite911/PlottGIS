@@ -14,15 +14,24 @@ angular.module('plottGisApp')
         zoom: 17 // starting zoom
       });
 
+      //Debug
+      map.debug = true;
+      map.collisionDebug = true;
+
+      // Add zoom and rotation controls to the map.
+      map.addControl(new mapboxgl.Navigation());
+
       //On click get interment data
       map.on('click', function(e) {
        map.featuresAt(e.point, {radius: 10, layer: 'interments', type: 'vector'}, function(err, features) {
            if (err) throw err;
            console.log(features);
           //  document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
-           $scope.clickFeature = features[0].properties;
-           $scope.$apply();
-           console.log($scope.clickFeature);
+          if (Array.isArray(features) && features.length > 0){
+            $scope.clickFeature = features[0].properties;
+            $scope.$apply();
+            console.log($scope.clickFeature);
+          }
        });
       });
     }
@@ -31,35 +40,45 @@ angular.module('plottGisApp')
         $scope.graves = graves;
         console.log('GET Interment', graves);
         socket.syncUpdates('interments', $scope.graves);
+        var intermentsSource = new mapboxgl.GeoJSONSource({
+         data: {
+             "type": "FeatureCollection",
+             "features": [$scope.graves[0], $scope.graves[1], $scope.graves[2]]
+         },
+
+        });
+        map.addSource('interments', intermentsSource); // add
         map.on('style.load', function() {
-          map.addSource("interments", {
-            "type": "geojson",
-            "data": {
-              "type": "FeatureCollection",
-              "features": $scope.graves
-            }
-          });
+        //   map.addSource("interments", {
+        //     "type": "geojson",
+        //     "data": {
+        //       "type": "FeatureCollection",
+        //       "features": $scope.graves
+        //     }
+        //   });
           map.addLayer({
            "id": "interments",
            "type": "symbol",
            "source": "interments",
            "interactive": true,
            "layout": {
-             "icon-image": "monument-12",
+             "icon-image": "cemetery-12",
+             "icon-allow-overlap": true,
              "text-field": "{last_name}",
              "text-font": "Open Sans Semibold, Arial Unicode MS Bold",
              "text-offset": [0, 0.6],
              "text-anchor": "top"
            },
            "paint": {
-             "text-size": 12,
+             "text-size": 8,
              "text-color": "#fff",
              "icon-color": "#fff"
            }
          });
        });
+      //  map.update({id: 'interments'});
+       console.log(map);
      });
-
 
 
     $scope.addThing = function() {
