@@ -3,10 +3,6 @@
 angular.module('plottGisApp')
   .controller('MapCtrl', function ($scope, $http, socket) {
 
-    var myStyle = {
-
-    }
-
     mapboxgl.accessToken = 'pk.eyJ1IjoiY3R3aGl0ZSIsImEiOiItb0dqdUlZIn0.4Zb1DGESXnx0ePxMVLihZQ';
     if (!mapboxgl.supported()) {
       alert('Your browser does not support Mapbox GL');
@@ -19,8 +15,8 @@ angular.module('plottGisApp')
       });
 
       //Debug
-      map.debug = true;
-      map.collisionDebug = true;
+      // map.debug = true;
+      // map.collisionDebug = true;
 
       // Add zoom and rotation controls to the map.
       map.addControl(new mapboxgl.Navigation());
@@ -45,14 +41,13 @@ angular.module('plottGisApp')
         $scope.graves = graves;
         console.log('GET Interment', graves);
         socket.syncUpdates('interments', $scope.graves);
+        var intermentsSource = new mapboxgl.GeoJSONSource({
+         data: $scope.graves,
+         maxzoom: 22,
+         buffer: 1
+        });
+        map.addSource('interments', intermentsSource); // add
         map.on('style.load', function() {
-          map.addSource("interments", {
-            "type": "geojson",
-            "data": {
-              "type": "FeatureCollection",
-              "features": graves
-            }
-          });
           map.addLayer({
            "id": "interments",
            "type": "symbol",

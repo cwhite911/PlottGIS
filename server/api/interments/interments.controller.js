@@ -2,13 +2,46 @@
 
 var _ = require('lodash');
 var Interments = require('./interments.model');
-// var geojsonvt = require('geojsonvt');
+var geojsonvt = require('geojson-vt');
+var fs = require('fs');
+var Readable = require('stream').Readable;
 
 // Get list of interments
 exports.index = function(req, res) {
   Interments.find(function (err, interments) {
     if(err) { return handleError(res, err); }
-    return res.json(200, interments);
+    var geoJSON = {
+      "type": "FeatureCollection",
+      "features": interments
+    }
+    return res.json(200, geoJSON);
+  });
+};
+
+// Get list of interments
+exports.geojson = function(req, res) {
+  Interments.find(function (err, interments) {
+    if(err) { return handleError(res, err); }
+    var geoJSON = {
+      "type": "FeatureCollection",
+      "features": interments
+    }
+    var data = JSON.stringify(geoJSON, null, 2);
+    // var s = new Readable
+    // s.push(data)    // the string you want
+    // s.push(null)
+    // var ws = fs.createWriteStream('./server/api/interments/interments.json')
+    var rs = fs.createReadStream('./server/api/interments/interments.json')
+    // interments.pipe(rs);
+
+    // s.on('end', function() {
+    //   console.log('there will be no more data.');
+
+      rs.pipe(res);
+
+      // res.json(200, geoJSON);
+    // });
+
   });
 };
 
