@@ -3,6 +3,10 @@
 angular.module('plottGisApp')
   .controller('MapCtrl', function ($scope, $http, socket) {
 
+    var myStyle = {
+
+    }
+
     mapboxgl.accessToken = 'pk.eyJ1IjoiY3R3aGl0ZSIsImEiOiItb0dqdUlZIn0.4Zb1DGESXnx0ePxMVLihZQ';
     if (!mapboxgl.supported()) {
       alert('Your browser does not support Mapbox GL');
@@ -25,9 +29,10 @@ angular.module('plottGisApp')
       map.on('click', function(e) {
        map.featuresAt(e.point, {radius: 10, layer: 'interments', type: 'vector'}, function(err, features) {
            if (err) throw err;
-           console.log(features);
-          //  document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
-          if (Array.isArray(features) && features.length > 0){
+
+           if (Array.isArray(features) && features.length > 0){
+            var latLng = new mapboxgl.LatLng(features[0].geometry.coordinates[1],features[0].geometry.coordinates[0]);
+            map.panTo(latLng);
             $scope.clickFeature = features[0].properties;
             $scope.$apply();
             console.log($scope.clickFeature);
@@ -40,22 +45,14 @@ angular.module('plottGisApp')
         $scope.graves = graves;
         console.log('GET Interment', graves);
         socket.syncUpdates('interments', $scope.graves);
-        var intermentsSource = new mapboxgl.GeoJSONSource({
-         data: {
-             "type": "FeatureCollection",
-             "features": [$scope.graves[0], $scope.graves[1], $scope.graves[2]]
-         },
-
-        });
-        map.addSource('interments', intermentsSource); // add
         map.on('style.load', function() {
-        //   map.addSource("interments", {
-        //     "type": "geojson",
-        //     "data": {
-        //       "type": "FeatureCollection",
-        //       "features": $scope.graves
-        //     }
-        //   });
+          map.addSource("interments", {
+            "type": "geojson",
+            "data": {
+              "type": "FeatureCollection",
+              "features": graves
+            }
+          });
           map.addLayer({
            "id": "interments",
            "type": "symbol",
@@ -76,7 +73,6 @@ angular.module('plottGisApp')
            }
          });
        });
-      //  map.update({id: 'interments'});
        console.log(map);
      });
 

@@ -2,12 +2,13 @@
 
 var _ = require('lodash');
 var Interments = require('./interments.model');
+// var geojsonvt = require('geojsonvt');
 
-// Get list of intermentss
+// Get list of interments
 exports.index = function(req, res) {
-  Interments.find(function (err, intermentss) {
+  Interments.find(function (err, interments) {
     if(err) { return handleError(res, err); }
-    return res.json(200, intermentss);
+    return res.json(200, interments);
   });
 };
 
