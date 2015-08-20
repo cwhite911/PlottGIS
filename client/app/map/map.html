@@ -2,9 +2,25 @@
 
   <div id="map"></map>
   <div ng-show="clickFeature" class='features'>
-    <h1>Grave: {{clickFeature.grave_num}}</h1><h2>{{clickFeature.section}}-{{clickFeature.lot}}-{{clickFeature.grave_num}}</h2>
+    <!-- <h1>Grave: {{clickFeature.grave_num}}</h1><h2>{{clickFeature.section}}-{{clickFeature.lot}}-{{clickFeature.grave_num}}</h2>
     <ul ng-repeat="(key, value) in clickFeature">
       <li ng-if="key !== 'url_photo'">{{key}}: {{value}}</li>
       <li ng-if="key === 'url_photo'"><img ng-src={{value}} alt="Headstone Photo"/></li>
-    </ul>
+    </ul> -->
+    <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="thumbnail">
+        <div class="page-header">
+          <h2>Riverside Cemetery <small>{{clickFeature.section}}-{{clickFeature.lot}}-{{clickFeature.grave_num}}</small></h2>
+        </div>
+        <img ng-src={{clickFeature.url_photo}} alt="Headstone Photo">
+        <div class="caption">
+          <h3>{{clickFeature.first_name}} {{clickFeature.middle_name}} {{clickFeature.last_name}}</h3>
+          <p>{{clickFeature.first_name}} was born on {{clickFeature.dob | date: 'fullDate'}} and died on {{clickFeature.dod | date: 'fullDate'}} at the age of </p>
+          <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="" ng-click="clickFeature = undefined" class="btn btn-default" role="button">Close</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   </div>
