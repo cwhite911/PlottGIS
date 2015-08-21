@@ -25,13 +25,21 @@ angular.module('plottGisApp')
       map.on('click', function(e) {
        map.featuresAt(e.point, {radius: 10, layer: 'interments', type: 'vector'}, function(err, features) {
            if (err) throw err;
-
            if (Array.isArray(features) && features.length > 0){
             var latLng = new mapboxgl.LatLng(features[0].geometry.coordinates[1],features[0].geometry.coordinates[0]);
             map.panTo(latLng);
             $scope.clickFeature = features[0].properties;
             $scope.$apply();
             console.log($scope.clickFeature);
+            var config = {
+              params: {
+                geojson: features[0].geometry
+              }
+            };
+            $http.get('/api/interments/near', config)
+              .success(function(nearGraves) {
+                $scope.nearFeatures = nearGraves;
+              });
           }
        });
       });
