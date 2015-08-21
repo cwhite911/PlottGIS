@@ -18,30 +18,17 @@ exports.index = function(req, res) {
   });
 };
 
-// Get list of interments
-exports.geojson = function(req, res) {
-  Interments.find(function (err, interments) {
-    if(err) { return handleError(res, err); }
-    var geoJSON = {
-      "type": "FeatureCollection",
-      "features": interments
-    }
-    var data = JSON.stringify(geoJSON, null, 2);
-    // var s = new Readable
-    // s.push(data)    // the string you want
-    // s.push(null)
-    // var ws = fs.createWriteStream('./server/api/interments/interments.json')
-    var rs = fs.createReadStream('./server/api/interments/interments.json')
-    // interments.pipe(rs);
-
-    // s.on('end', function() {
-    //   console.log('there will be no more data.');
-
-      rs.pipe(res);
-
-      // res.json(200, geoJSON);
-    // });
-
+// Gets 5 nearest interments
+exports.near = function(req, res) {
+  var point = JSON.parse(req.query.geojson);
+  Interments.geoNear(point, { maxDistance : 1, spherical : true, uniqueDocs: true}, function (err, interments, stats) {
+      if(err) { return handleError(res, err); }
+      if(!interments) { return res.send(404); }
+      //Remove source interment
+      if (Array.isArray(interments) && interments.length > 0){
+        interments[0].dis === 0 ? interments.shift() : interments;
+      }
+      return res.json(200, interments);
   });
 };
 

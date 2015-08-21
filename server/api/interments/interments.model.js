@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 var IntermentsSchema = new Schema({
   type: {type: String, default: "Feature"},
   properties: {
+    cemetery: {type: String, required: true},
     interment_num: {type: String, required: true},
     section: {type: String, required: true},
     lot: {type: String, required: true},
