@@ -21,7 +21,7 @@ exports.index = function(req, res) {
 // Gets 5 nearest interments
 exports.near = function(req, res) {
   var point = JSON.parse(req.query.geojson);
-  Interments.geoNear(point, { maxDistance : 1, spherical : true, uniqueDocs: true}, function (err, interments, stats) {
+  Interments.geoNear(point, { maxDistance : 1, spherical : true, uniqueDocs: true, limit: 5}, function (err, interments, stats) {
       if(err) { return handleError(res, err); }
       if(!interments) { return res.send(404); }
       //Remove source interment
