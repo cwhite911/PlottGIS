@@ -21,12 +21,13 @@ exports.index = function(req, res) {
 // Gets 5 nearest interments
 exports.near = function(req, res) {
   var point = JSON.parse(req.query.geojson);
-  Interments.geoNear(point, { maxDistance : 1, spherical : true, uniqueDocs: true, limit: 5}, function (err, interments, stats) {
+  Interments.geoNear(point, { maxDistance : 1, spherical : true, uniqueDocs: true, limit: 5 ,distanceMultiplier: 20900000}, function (err, interments, stats) {
       if(err) { return handleError(res, err); }
       if(!interments) { return res.send(404); }
       //Remove source interment
       if (Array.isArray(interments) && interments.length > 0){
-        interments[0].dis === 0 ? interments.shift() : interments;
+        // interments[0].dis === 0 ? interments.shift() : interments;
+        interments.shift();
       }
       return res.json(200, interments);
   });

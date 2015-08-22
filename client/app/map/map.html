@@ -16,7 +16,7 @@
         <img ng-src={{clickFeature.url_photo}} alt="Headstone Photo">
         <div class="caption">
           <h3>{{clickFeature.first_name}} {{clickFeature.middle_name}} {{clickFeature.last_name}}</h3>
-          <p>{{clickFeature.first_name}} was born on {{clickFeature.dob | date: 'fullDate'}} and died on {{clickFeature.dod | date: 'fullDate'}} at the age of </p>
+          <p>{{clickFeature.first_name}} was born on {{clickFeature.dob | date: 'fullDate'}} and died on {{clickFeature.dod | date: 'fullDate'}} at the age of {{clickFeature.age}}</p>
           <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="" ng-click="clickFeature = undefined" class="btn btn-default" role="button">Close</a></p>
         </div>
       </div>
@@ -30,7 +30,7 @@
       </div>
       <div class="thumbnail" ng-repeat="n in nearFeatures">
         <div class="page-header">
-          <h2>{{n.obj.properties.section}}-{{n.obj.properties.lot}}-{{n.obj.properties.grave_num}} <small>{{n.dis | number: 2}} m</small></h2>
+          <h2>{{n.obj.properties.section}}-{{n.obj.properties.lot}}-{{n.obj.properties.grave_num}} <small>{{n.dis | number: 2}} ft</small></h2>
         </div>
         <img ng-src={{n.obj.properties.url_photo}} alt="Headstone Photo">
         <div class="caption">
