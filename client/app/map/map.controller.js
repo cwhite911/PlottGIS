@@ -15,13 +15,13 @@ angular.module('plottGisApp')
       });
 
       //Debug
-      map.debug = true;
-      map.collisionDebug = true;
-      map.repaint = true;
+      // map.debug = true;
+      // map.collisionDebug = true;
+      // map.repaint = true;
 
       // Add zoom and rotation controls to the map.
       map.addControl(new mapboxgl.Navigation());
-
+      
       //On click get interment data
       map.on('click', function(e) {
        map.featuresAt(e.point, {radius: 10, layer: 'interments', type: 'vector'}, function(err, features) {
@@ -53,7 +53,7 @@ angular.module('plottGisApp')
         var intermentsSource = new mapboxgl.GeoJSONSource({
          data: $scope.graves,
          maxzoom: 22,
-         buffer: 1
+         buffer: 0
         });
         console.log('GET Interment', graves);
         map.addSource('interments', intermentsSource); // add

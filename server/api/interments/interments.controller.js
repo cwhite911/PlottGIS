@@ -5,17 +5,31 @@ var Interments = require('./interments.model');
 var geojsonvt = require('geojson-vt');
 var fs = require('fs');
 var Readable = require('stream').Readable;
+var Stream = require('stream').Stream;
 
 // Get list of interments
 exports.index = function(req, res) {
-  Interments.find(function (err, interments) {
-    if(err) { return handleError(res, err); }
-    var geoJSON = {
-      "type": "FeatureCollection",
-      "features": interments
-    }
-    return res.json(200, geoJSON);
+  // Interments.find(function (err, interments) {
+  //   if(err) { return handleError(res, err); }
+  //   var geoJSON = {
+  //     "type": "FeatureCollection",
+  //     "features": interments
+  //   }
+  //   return res.json(200, geoJSON);
+  // });
+  res.contentType('json');
+  // use our lame formatter
+   var format = new ArrayFormatter;
+  var wStream = fs.createWriteStream('./data/interments.json');
+
+  wStream.on('error', function(err){
+    console.log(err);
   });
+  Interments.find().stream().pipe(format).pipe(wStream);
+  wStream.on('end', function(err){
+    wStream.pipe(res);
+  });
+  // // res.status(200).end();
 };
 
 // Gets 5 nearest interments
@@ -78,4 +92,37 @@ exports.destroy = function(req, res) {
 
 function handleError(res, err) {
   return res.send(500, err);
+}
+
+function ArrayFormatter () {
+  Stream.call(this);
+  this.writable = true;
+  this._done = false;
+}
+
+ArrayFormatter.prototype.__proto__ = Stream.prototype;
+
+ArrayFormatter.prototype.write = function (doc) {
+  if (! this._hasWritten) {
+    this._hasWritten = true;
+
+    // open an object literal / array string along with the doc
+    this.emit('data', '{"type": "FeatureCollection", "features": [' + JSON.stringify(doc) );
+
+  } else {
+    this.emit('data', ',' + JSON.stringify(doc));
+  }
+
+  return true;
+}
+
+ArrayFormatter.prototype.end =
+ArrayFormatter.prototype.destroy = function () {
+  if (this._done) return;
+  this._done = true;
+
+  // close the object literal / array
+  this.emit('data', ']}');
+  // done
+  this.emit('end');
 }
