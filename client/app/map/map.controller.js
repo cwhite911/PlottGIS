@@ -21,7 +21,7 @@ angular.module('plottGisApp')
 
       // Add zoom and rotation controls to the map.
       map.addControl(new mapboxgl.Navigation());
-      
+
       //On click get interment data
       map.on('click', function(e) {
        map.featuresAt(e.point, {radius: 10, layer: 'interments', type: 'vector'}, function(err, features) {
@@ -46,7 +46,7 @@ angular.module('plottGisApp')
       });
     }
 
-      $http.get('/api/interments', {cache: true}).success(function(graves) {
+      $scope.intermentPromise = $http.get('/api/interments', {cache: true}).success(function(graves) {
         $scope.graves = graves;
 
         socket.syncUpdates('interments', $scope.graves);

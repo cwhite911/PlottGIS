@@ -17,19 +17,10 @@ exports.index = function(req, res) {
   //   }
   //   return res.json(200, geoJSON);
   // });
-  res.contentType('json');
-  // use our lame formatter
-   var format = new ArrayFormatter;
-  var wStream = fs.createWriteStream('./data/interments.json');
 
-  wStream.on('error', function(err){
-    console.log(err);
-  });
-  Interments.find().stream().pipe(format).pipe(wStream);
-  wStream.on('end', function(err){
-    wStream.pipe(res);
-  });
-  // // res.status(200).end();
+  // use our lame formatter
+  var format = new ArrayFormatter;
+  Interments.find().stream().pipe(format).pipe(res);
 };
 
 // Gets 5 nearest interments
