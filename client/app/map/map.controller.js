@@ -24,14 +24,11 @@ angular.module('plottGisApp')
 
       //On click get interment data
       map.on('click', function(e) {
-       map.featuresAt(e.point, {radius: 10, layer: 'interments', type: 'vector'}, function(err, features) {
+       map.featuresAt(e.point, {radius: 3, layer: 'interments', type: 'vector'}, function(err, features) {
            if (err) throw err;
            if (Array.isArray(features) && features.length > 0){
             var latLng = new mapboxgl.LatLng(features[0].geometry.coordinates[1],features[0].geometry.coordinates[0]);
             map.panTo(latLng);
-            $scope.clickFeature = features[0].properties;
-            $scope.$apply();
-            console.log($scope.clickFeature);
             var config = {
               params: {
                 geojson: features[0].geometry
@@ -39,6 +36,8 @@ angular.module('plottGisApp')
             };
             $http.get('/api/interments/near', config)
               .success(function(nearGraves) {
+                $scope.clickFeature = nearGraves.shift().obj.properties;
+                console.log($scope.clickFeature);
                 $scope.nearFeatures = nearGraves;
               });
           }

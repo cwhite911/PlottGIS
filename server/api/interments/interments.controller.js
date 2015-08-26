@@ -7,20 +7,19 @@ var fs = require('fs');
 var Readable = require('stream').Readable;
 var Stream = require('stream').Stream;
 
+var geoJSON = {
+  "type": "FeatureCollection"
+};
 // Get list of interments
 exports.index = function(req, res) {
-  // Interments.find(function (err, interments) {
-  //   if(err) { return handleError(res, err); }
-  //   var geoJSON = {
-  //     "type": "FeatureCollection",
-  //     "features": interments
-  //   }
-  //   return res.json(200, geoJSON);
-  // });
-
+  Interments.find({'properties.type': 'GRAVE'}, {'_id': 1, 'properties.last_name': 1, 'geometry': 1, 'type': 1 } ,function (err, interments) {
+    if(err) { return handleError(res, err); }
+    geoJSON.features = interments;
+    return res.json(200, geoJSON);
+  });
   // use our lame formatter
-  var format = new ArrayFormatter;
-  Interments.find().stream().pipe(format).pipe(res);
+  // var format = new ArrayFormatter;
+  // Interments.find({}, {'_id': 1, 'properties.last_name': 1, 'geometry': 1, 'type': 1 }).stream().pipe(format).pipe(res);
 };
 
 // Gets 5 nearest interments
@@ -29,11 +28,6 @@ exports.near = function(req, res) {
   Interments.geoNear(point, { maxDistance : 1, spherical : true, uniqueDocs: true, limit: 5 ,distanceMultiplier: 20900000}, function (err, interments, stats) {
       if(err) { return handleError(res, err); }
       if(!interments) { return res.send(404); }
-      //Remove source interment
-      if (Array.isArray(interments) && interments.length > 0){
-        // interments[0].dis === 0 ? interments.shift() : interments;
-        interments.shift();
-      }
       return res.json(200, interments);
   });
 };
